@@ -1,77 +1,79 @@
 # Bluetooth-to-Infrared Remote Controller
 
-**Android app · Arduino Uno · Bluetooth serial · Infrared communication · Embedded C++**
+**Embedded systems · Arduino Uno · C/C++ · Bluetooth · Infrared protocols · Hardware validation**
 
-A wireless remote-control system developed for my final-year Electronic and Computer Engineering project at the University of Limerick (2023). An Android interface sends commands over Bluetooth to an Arduino, which translates them into infrared signals for a television. The prototype was developed through successive receiver, transmitter, LED, LED-strip and TV-control demonstrations.
+A complete hardware-and-software remote-control system built for my final-year Electronic and Computer Engineering project at the University of Limerick (2023). An Android application communicates with an Arduino Uno over Bluetooth, allowing users to operate a television through infrared commands.
 
-![Completed Arduino and infrared controller in its 3D-printed housing](assets/prototype-2023.png)
+The project combined circuit design, microcontroller programming, wireless communication, infrared protocol decoding, iterative hardware testing and enclosure design. Development progressed from independent transmitter and receiver circuits to a working Bluetooth-controlled television remote.
 
-## Project highlights
+![Completed Bluetooth infrared controller prototype](assets/prototype-2023.png)
 
-- **End-to-end hardware/software integration:** Android controls a Bluetooth-connected microcontroller driving an IR transmitter.
-- **Protocol work:** Bluetooth serial commands are mapped to NEC2 commands during LED-strip development and RC6 commands for the television.
-- **Incremental verification:** Independent IR transmitter and receiver circuits were used to inspect codes before full system integration.
-- **Mechanical design:** A SolidWorks-designed enclosure was produced for the final prototype.
-- **Reproducible software checks:** The modern command dispatcher passes 515 host-side checks in both standard and `NDEBUG` build configurations.
+## Engineering highlights
 
-## System architecture
+- **End-to-end integration:** Connected an Android app, HC-05 Bluetooth module, Arduino Uno and IR transmitter into one control system.
+- **Communication protocols:** Decoded and reproduced NEC/NEC2 infrared commands for LED-strip testing and RC6 commands for television control.
+- **Test-driven hardware development:** Built separate transmitter and receiver circuits to inspect transmitted codes before combining the subsystems.
+- **Embedded command handling:** Mapped app button inputs to device-specific IR address and command values.
+- **Product design:** Designed an enclosure in SolidWorks and assembled the final prototype in a 3D-printed housing.
 
-![System block diagram showing phone, HC-05, Arduino Uno and IR transmitter](assets/architecture-2026.svg)
+## How the system works
 
-| Stage | Design |
+![System architecture showing Android phone, HC-05, Arduino Uno and IR transmitter](assets/architecture-2026.svg)
+
+1. The user selects a function in the **Android application**, created using MIT App Inventor.
+2. The app sends a command character over **Bluetooth** to an HC-05 module.
+3. The **Arduino Uno** reads the serial input at 9600 baud and selects the corresponding infrared command.
+4. An **IR transmitter on digital pin D3** sends the signal to the television.
+
+**Example:** The app's Volume Up button sends `'1'` (ASCII 49). The controller maps that input to RC6 address `0x00`, command `0x10`.
+
+The [command reference](docs/commands.md) documents all 20 television controls. See [hardware and wiring](docs/hardware.md) for the circuit design and components.
+
+## Development and demonstrated results
+
+| Stage | What I built and demonstrated |
 | --- | --- |
-| User input | Android application created with MIT App Inventor |
-| Wireless link | HC-05 classic Bluetooth module using serial communication |
-| Embedded controller | Arduino Uno (ATmega328P), 9600-baud serial input |
-| Output | IR transmitter module connected to Arduino digital pin D3 |
-| Target | Infrared-controlled television (RC6 command profile) |
-| Verification | Separate Arduino/IR receiver circuit used during prototype development |
+| Infrared decoding | Built an IR receiver circuit and decoded remote-control command, address and protocol information through the Arduino serial monitor. |
+| Infrared transmission | Used a separate Arduino transmitter to reproduce captured commands and operate an LED strip. |
+| Bluetooth control | Developed an Android interface and verified wireless commands by switching an Arduino-connected LED on and off. |
+| System integration | Combined Bluetooth input and infrared output to control an LED strip, then adapted the system to operate a television. |
+| Final assembly | Designed the enclosure in SolidWorks and assembled the working prototype. |
 
-**Command path:** App button → one ASCII-compatible input byte → Bluetooth serial → Arduino command lookup → RC6 address/command → IR transmitter → TV receiver.
+The [project evidence gallery](docs/evidence.md) includes prototype photographs, circuit assemblies, wiring diagrams and Android app screenshots from development.
 
-For example, selecting **Volume Up** sends the byte for `'1'` (decimal 49). The controller maps it to RC6 address `0x00`, command `0x10`. The [complete mapping](docs/commands.md) covers 20 buttons.
+## Firmware and software verification
 
-## Development and results
+The repository includes an **updated Arduino/C++ command-dispatch implementation**, reconstructed in 2026 from the documented interface of the 2023 prototype. Its history is explained in [project history](docs/project-history.md).
 
-| Development stage | Demonstration |
-| --- | --- |
-| IR reception | Decode remote-control signals and print command information through the serial monitor |
-| IR transmission | Send known codes to a separate receiver and operate an LED strip |
-| Bluetooth communication | Control a test LED from an Android app through the HC-05 and Arduino |
-| Integrated controller | Use Android app buttons to transmit infrared functions for the LED strip and television |
-| Finished assembly | House the electronics in a custom 3D-printed enclosure |
+The implementation uses a fixed command table to translate Bluetooth serial inputs into IR commands, alongside host-side tests that check command dispatch without requiring a connected Arduino.
 
-Explore the [original prototype photographs and app screenshots](docs/evidence.md) and the [hardware wiring](docs/hardware.md).
+**Verified software results (Windows, 11 November 2026):**
 
-## Firmware and tests in this repository
+- Standard build: **515 checks passed**.
+- `NDEBUG` build: **515 checks passed**.
+- All **256 possible input byte values** exercised; all **20 supported television commands** checked.
 
-The `software/firmware` directory contains a **2026 reconstructed implementation** of the TV controller's command-dispatch behaviour, using a fixed lookup table and the modern IRremote library interface. It is separate from the 2023 prototype implementation; the reconstructed code and documentation were developed with AI assistance. The original project is represented here by its photographs, design diagrams, app screenshots and documented engineering results. See [project history](docs/project-history.md).
-
-The host-side test program validates the mapping of all 256 possible input bytes, the 20 valid commands, ignored inputs and IR dispatch calls using test doubles.
-
-From the project root, with Python 3 and a `g++` compiler:
+Run the tests from the repository root with Python 3 and a C++ compiler (`g++`):
 
 ```powershell
 python software/tools/run_tests.py
 ```
 
-**Verified result:** Both standard and `NDEBUG` builds compile successfully and pass **515 checks per build**, including a Windows run on 11 November 2026. These tests verify the reconstructed software logic, rather than physical IR output. Details are in [verification](docs/verification.md).
+The original 2023 hardware demonstrations and the later host-based software checks are separate forms of evidence; see [verification details](docs/verification.md) for the precise testing scope.
 
-## Explore the repository
+## Explore the project
 
 | Resource | Contents |
 | --- | --- |
-| [Hardware and wiring](docs/hardware.md) | Components, signal flow, connection details and safety notes |
-| [Firmware implementation](docs/implementation.md) | Embedded software architecture and Android interface workflow |
-| [IR command mappings](docs/commands.md) | Input bytes, functions and infrared commands |
-| [Project evidence](docs/evidence.md) | Original prototype photographs, app screenshots and development milestones |
-| [Build and run](docs/build-and-run.md) | Windows tests and Arduino target-build instructions |
-| [Verification](docs/verification.md) | Software test results and the scope of demonstrated operation |
-| [Project history](docs/project-history.md) | 2023 engineering work and 2026 software reconstruction |
-| [Source code](software/firmware/BluetoothIrRemote/BluetoothIrRemote.ino) | Arduino firmware reconstruction |
+| [Project evidence](docs/evidence.md) | Prototype photographs, circuit images, Android app and development stages |
+| [Hardware and wiring](docs/hardware.md) | Components, wiring diagrams and signal paths |
+| [Firmware implementation](docs/implementation.md) | Embedded software structure and communication workflow |
+| [IR command reference](docs/commands.md) | Input characters, command addresses and protocols |
+| [Firmware source](software/firmware/BluetoothIrRemote/BluetoothIrRemote.ino) | Reconstructed Arduino implementation |
+| [Build and run](docs/build-and-run.md) | Local software test and target-build instructions |
+| [Verification](docs/verification.md) | Test methodology and evidence |
+| [Project history](docs/project-history.md) | Development timeline and source provenance |
 
-## Further development
+---
 
-The natural next steps are compiling the reconstructed sketch against the actual Arduino AVR toolchain, deploying it on an Uno, and capturing RC6 output with an independent IR receiver. The historical prototype operated physical devices; the reconstructed firmware has been verified through host tests so far.
-
-*Project: Matthew Coyle · Electronic and Computer Engineering, University of Limerick*
+*Matthew Coyle · Bachelor of Engineering, Electronic and Computer Engineering · University of Limerick*
