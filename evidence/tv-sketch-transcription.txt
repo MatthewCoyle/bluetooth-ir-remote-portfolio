@@ -1,0 +1,113 @@
+// Annotated 2026 transcription of the 2023 TV-control program.
+// Source history: docs/project-history.md. For reference, not part of the firmware build.
+#include <IRremote.h>
+#define PIN_SEND 3
+IRsend irsend;
+int state = 0;
+void setup() {
+  Serial.begin(9600);
+  irsend.begin(PIN_SEND);
+}
+void loop() {
+  if (Serial.available() > 0) state = Serial.read();
+  if (state == '0') { // power
+    irsend.sendRC6(0x0, 0xC, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == '1') { // volume_up
+    irsend.sendRC6(0x0, 0x10, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == '2') { // volume_down
+    irsend.sendRC6(0x0, 0x11, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == '3') { // source
+    irsend.sendRC6(0x0, 0x38, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == '4') { // up
+    irsend.sendRC6(0x0, 0x58, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == '5') { // down
+    irsend.sendRC6(0x0, 0x59, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == '6') { // left
+    irsend.sendRC6(0x0, 0x5A, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == '7') { // right
+    irsend.sendRC6(0x0, 0x5B, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == '8') { // select
+    irsend.sendRC6(0x0, 0x5C, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == '9') { // setup
+    irsend.sendRC6(0x0, 0xBF, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == 'A') { // digit_1
+    irsend.sendRC6(0x0, 0x1, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == 'B') { // digit_2
+    irsend.sendRC6(0x0, 0x2, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == 'C') { // digit_3
+    irsend.sendRC6(0x0, 0x3, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == 'D') { // digit_4
+    irsend.sendRC6(0x0, 0x4, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == 'E') { // digit_5
+    irsend.sendRC6(0x0, 0x5, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == 'F') { // digit_6
+    irsend.sendRC6(0x0, 0x6, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == 'G') { // digit_7
+    irsend.sendRC6(0x0, 0x7, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == 'H') { // digit_8
+    irsend.sendRC6(0x0, 0x8, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == 'I') { // digit_9
+    irsend.sendRC6(0x0, 0x9, 0);
+    state = 0;
+    delay(40);
+  }
+  else if (state == 'J') { // digit_0
+    irsend.sendRC6(0x0, 0x0, 0);
+    state = 0;
+    delay(40);
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "compiler": "g++.exe (Rev5, Built by MSYS2 project) 16.1.0",
+  "results": [
+    {
+      "mode": "normal",
+      "compile_exit": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_exit": 0,
+      "stdout": "PASS: 515 checks; all 256 input bytes; 20 complete mappings; firmware dispatch with host doubles\n",
+      "stderr": ""
+    },
+    {
+      "mode": "ndebug",
+      "compile_exit": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_exit": 0,
+      "stdout": "PASS: 515 checks; all 256 input bytes; 20 complete mappings; firmware dispatch with host doubles\n",
+      "stderr": ""
+    }
+  ]
+}

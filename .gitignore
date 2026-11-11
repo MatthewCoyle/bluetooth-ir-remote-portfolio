@@ -1,0 +1,6 @@
+build/
+*.exe
+*.o
+*.hex
+*.elf
+__pycache__/
